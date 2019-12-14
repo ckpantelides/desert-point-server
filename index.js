@@ -1,6 +1,7 @@
 // run server: node index.js || nodemon index.js for hot-reloads
 const app = require("express")();
 const server = require("http").Server(app);
+const sqlite3 = require("sqlite3").verbose();
 
 // parsing middleware allows us to read incoming axios data
 const bodyParser = require("body-parser");
@@ -24,8 +25,32 @@ app.get("/", function(req, res) {
 // when data received from client-side via axios
 app.post("/post", function(req, res) {
   // body-parser saves incoming data in req.body
-  const data = req.body;
-  console.log(data.inputs);
+  const data = req.body.inputs;
+
+  // open database
+  let db = new sqlite3.Database("data.db", err => {
+    if (err) {
+      return console.error(err.message);
+    }
+  });
+
+  let name = data.name;
+  let email = data.email;
+  let message = data.message;
+  // insert form input into table
+  db.run(
+    "INSERT INTO bookings (name, email, message) VALUES (?,?,?)",
+    name,
+    email,
+    message
+  );
+
+  // close the database connection
+  db.close(err => {
+    if (err) {
+      return console.error(err.message);
+    }
+  });
 });
 
 module.exports = app;
