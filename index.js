@@ -53,4 +53,33 @@ app.post("/post", function(req, res) {
   });
 });
 
+// show booking enquiries to admin
+app.get("/enquiries", function(req, res, callback) {
+  // open database connection
+  let db = new sqlite3.Database("data.db", "OPEN_READONLY", err => {
+    if (err) {
+      return console.error(err.message);
+    }
+  });
+
+  db.all("SELECT name,email,message FROM bookings", function(err, rows) {
+    if (err) {
+      return console.log(err.message);
+    } else {
+      return callback(rows);
+      db.close();
+    }
+  });
+  /*
+      // An array storing all of the film data to be sent to the front end
+      let collatedFilmsByDay = [day0, day1, day2, day3, day4, day5, day6];
+      return callback(collatedFilmsByDay);
+    }
+  });
+  */
+  function callback(data) {
+    res.send(data);
+  }
+});
+
 module.exports = app;
