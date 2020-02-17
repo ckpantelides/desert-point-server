@@ -34,15 +34,26 @@ app.post("/post", function(req, res) {
     }
   });
 
+  let enquirydate = new Date().toISOString().slice(0, 10);
   let name = data.name;
   let email = data.email;
+  let telephone = data.telephone;
+  let dates = data.dates;
+  let package = data.package;
   let message = data.message;
+  let read = "false";
+
   // insert form input into table
   db.run(
-    "INSERT INTO bookings (name, email, message) VALUES (?,?,?)",
+    "INSERT INTO bookings (enquirydate, name, email, telephone, dates, package, message, read) VALUES (?,?,?,?,?,?,?,?)",
+    enquirydate,
     name,
     email,
-    message
+    telephone,
+    dates,
+    package,
+    message,
+    read
   );
 
   // close the database connection
@@ -62,14 +73,17 @@ app.get("/enquiries", function(req, res, callback) {
     }
   });
 
-  db.all("SELECT name,email,message FROM bookings", function(err, rows) {
-    if (err) {
-      return console.log(err.message);
-    } else {
-      return callback(rows);
-      db.close();
+  db.all(
+    "SELECT rowid,enquirydate, name, email, telephone, dates, package, message, read FROM bookings",
+    function(err, rows) {
+      if (err) {
+        return console.log(err.message);
+      } else {
+        return callback(rows);
+        db.close();
+      }
     }
-  });
+  );
   /*
       // An array storing all of the film data to be sent to the front end
       let collatedFilmsByDay = [day0, day1, day2, day3, day4, day5, day6];
