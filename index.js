@@ -66,43 +66,46 @@ app.post("/post", function(req, res) {
     .connect()
     .then(() => {
       console.log("connected");
+      insertNewEnquiry();
     })
     .catch(e => {
       console.log(e);
     });
 
-  let enquirydate = new Date().toISOString().slice(0, 10);
-  let name = data.name;
-  let email = data.email;
-  let telephone = data.telephone;
-  let dates = data.dates;
-  let package = data.package;
-  let message = data.message;
-  let read = "false";
+  function insertNewEnquiry() {
+    let enquirydate = new Date().toISOString().slice(0, 10);
+    let name = data.name;
+    let email = data.email;
+    let telephone = data.telephone;
+    let dates = data.dates;
+    let package = data.package;
+    let message = data.message;
+    let read = "false";
 
-  const text =
-    "INSERT INTO bookings(enquirydate, name, email, telephone, dates, package, message, read) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *";
-  const values = [
-    enquirydate,
-    name,
-    email,
-    telephone,
-    dates,
-    package,
-    message,
-    read
-  ];
-  // inset into bookings table
-  client.query(text, values, (err, res) => {
-    if (err) {
-      console.log(err.stack);
-    } else {
-      console.log(res.rows[0]);
-    }
-  });
+    const text =
+      "INSERT INTO bookings(enquirydate, name, email, telephone, dates, package, message, read) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *";
+    const values = [
+      enquirydate,
+      name,
+      email,
+      telephone,
+      dates,
+      package,
+      message,
+      read
+    ];
+    // inset into bookings table
+    client.query(text, values, (err, res) => {
+      if (err) {
+        console.log(err.stack);
+      } else {
+        console.log(res.rows[0]);
+      }
+    });
 
-  // close the database connection
-  client.end();
+    // close the database connection
+    client.end();
+  }
 });
 
 // show booking enquiries to admin
