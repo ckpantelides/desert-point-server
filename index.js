@@ -63,7 +63,14 @@ app.post("/post", function(req, res) {
   });
   console.log(process.env.DATABASE_URL);
 
-  client.connect();
+  client
+    .connect()
+    .then(() => {
+      console.log("connected");
+    })
+    .catch(e => {
+      console.log(e);
+    });
 
   let enquirydate = new Date().toISOString().slice(0, 10);
   let name = data.name;
