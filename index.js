@@ -61,6 +61,7 @@ app.post("/post", function(req, res) {
     connectionString: process.env.DATABASE_URL,
     ssl: true
   });
+  console.log(process.env.DATABASE_URL);
 
   client.connect();
 
