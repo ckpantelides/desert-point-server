@@ -55,7 +55,7 @@ app.get("/", function(req, res) {
 app.post("/post", function(req, res) {
   // body-parser saves incoming data in req.body
   const data = req.body.inputs;
-
+  console.log(data);
   client.connect();
 
   let enquirydate = new Date().toISOString().slice(0, 10);
