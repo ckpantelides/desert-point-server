@@ -84,16 +84,61 @@ app.get("/enquiries", function(req, res, callback) {
       }
     }
   );
-  /*
-      // An array storing all of the film data to be sent to the front end
-      let collatedFilmsByDay = [day0, day1, day2, day3, day4, day5, day6];
-      return callback(collatedFilmsByDay);
-    }
-  });
-  */
   function callback(data) {
     res.send(data);
   }
+});
+
+app.post("/update-enquiries", function(req, res) {
+  const data = req.body.data;
+
+  // open database
+  let db = new sqlite3.Database("data.db", err => {
+    if (err) {
+      return console.error(err.message);
+    }
+  });
+
+  // delete all rows from bookings table
+  db.run("DELETE FROM bookings", function(err) {
+    if (err) {
+      return console.error(err.message);
+    }
+  });
+
+  // iterate over updated enquiry data and input into bookings table
+  data.forEach(function(el, index) {
+    let rowid = index + 1;
+    let enquirydate = el.enquirydate;
+    let name = el.name;
+    let email = el.email;
+    let telephone = el.telephone;
+    let dates = el.dates;
+    let package = el.package;
+    let message = el.message;
+    let read = el.read;
+
+    // insert updated enquiry data into bookings table
+    db.run(
+      "INSERT INTO bookings (rowid,enquirydate, name, email, telephone, dates, package, message, read) VALUES (?,?,?,?,?,?,?,?,?)",
+      rowid,
+      enquirydate,
+      name,
+      email,
+      telephone,
+      dates,
+      package,
+      message,
+      read
+    );
+  });
+
+  // close the database connection
+  db.close(err => {
+    if (err) {
+      return console.error(err.message);
+    }
+  });
 });
 
 module.exports = app;
