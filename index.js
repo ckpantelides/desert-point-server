@@ -40,8 +40,6 @@ const port = process.env.PORT || 8000;
 app.listen(port);
 console.log("Server running on port " + port);
 
-const { Client } = require("pg");
-
 /*
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
@@ -57,11 +55,12 @@ app.get("/", function(req, res) {
 app.post("/post", function(req, res) {
   // body-parser saves incoming data in req.body
   const data = req.body.inputs;
+  const { Client } = require("pg");
+
   const client = new Client({
     connectionString: process.env.DATABASE_URL,
     ssl: true
   });
-  console.log(process.env.DATABASE_URL);
 
   client
     .connect()
