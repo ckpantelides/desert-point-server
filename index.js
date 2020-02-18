@@ -24,7 +24,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 const port = process.env.PORT || 8000;
-server.listen(port);
+//server.listen(port);
+app.listen(port);
 console.log("Server running on port " + port);
 
 const { Client } = require("pg");
