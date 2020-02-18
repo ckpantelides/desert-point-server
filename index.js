@@ -42,10 +42,12 @@ console.log("Server running on port " + port);
 
 const { Client } = require("pg");
 
+/*
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
   ssl: true
 });
+*/
 
 app.get("/", function(req, res) {
   res.sendFile(__dirname + "/index.html");
@@ -55,7 +57,11 @@ app.get("/", function(req, res) {
 app.post("/post", function(req, res) {
   // body-parser saves incoming data in req.body
   const data = req.body.inputs;
-  console.log(data);
+  const client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: true
+  });
+
   client.connect();
 
   let enquirydate = new Date().toISOString().slice(0, 10);
