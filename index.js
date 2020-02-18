@@ -92,6 +92,35 @@ app.get("/enquiries", function(req, res, callback) {
 app.post("/update-enquiries", function(req, res) {
   const data = req.body.data;
 
+  // iterate over updated enquiry data and input into bookings table
+  function updateEnquiries() {
+    data.forEach(function(el, index) {
+      let rowid = index + 1;
+      let enquirydate = el.enquirydate;
+      let name = el.name;
+      let email = el.email;
+      let telephone = el.telephone;
+      let dates = el.dates;
+      let package = el.package;
+      let message = el.message;
+      let read = el.read;
+
+      // insert updated enquiry data into bookings table
+      db.run(
+        "INSERT INTO bookings (rowid,enquirydate, name, email, telephone, dates, package, message, read) VALUES (?,?,?,?,?,?,?,?,?)",
+        rowid,
+        enquirydate,
+        name,
+        email,
+        telephone,
+        dates,
+        package,
+        message,
+        read
+      );
+    });
+  }
+
   // open database
   let db = new sqlite3.Database("data.db", err => {
     if (err) {
@@ -103,34 +132,9 @@ app.post("/update-enquiries", function(req, res) {
   db.run("DELETE FROM bookings", function(err) {
     if (err) {
       return console.error(err.message);
+    } else {
+      updateEnquiries();
     }
-  });
-
-  // iterate over updated enquiry data and input into bookings table
-  data.forEach(function(el, index) {
-    let rowid = index + 1;
-    let enquirydate = el.enquirydate;
-    let name = el.name;
-    let email = el.email;
-    let telephone = el.telephone;
-    let dates = el.dates;
-    let package = el.package;
-    let message = el.message;
-    let read = el.read;
-
-    // insert updated enquiry data into bookings table
-    db.run(
-      "INSERT INTO bookings (rowid,enquirydate, name, email, telephone, dates, package, message, read) VALUES (?,?,?,?,?,?,?,?,?)",
-      rowid,
-      enquirydate,
-      name,
-      email,
-      telephone,
-      dates,
-      package,
-      message,
-      read
-    );
   });
 
   // close the database connection
