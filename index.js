@@ -67,10 +67,26 @@ app.post("/post", function(req, res) {
   let message = data.message;
   let read = "false";
 
-  // insert form input into table
-  client.query(
-    "INSERT INTO bookings (enquirydate, name, email, telephone, dates, package, message, read) VALUES (enquirydate, name, email, telephone, dates, package, message, read)"
-  );
+  const text =
+    "INSERT INTO bookings(enquirydate, name, email, telephone, dates, package, message, read) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *";
+  const values = [
+    enquirydate,
+    name,
+    email,
+    telephone,
+    dates,
+    package,
+    message,
+    read
+  ];
+  // inset into bookings table
+  client.query(text, values, (err, res) => {
+    if (err) {
+      console.log(err.stack);
+    } else {
+      console.log(res.rows[0]);
+    }
+  });
 
   // close the database connection
   client.end();
