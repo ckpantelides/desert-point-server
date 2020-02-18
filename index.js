@@ -18,6 +18,133 @@ const port = process.env.PORT || 8000;
 server.listen(port);
 console.log("Server running on port " + port);
 
+const { Client } = require("pg");
+
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true
+});
+
+client.connect();
+
+client.query(
+  "SELECT table_schema,table_name FROM information_schema.tables;",
+  (err, res) => {
+    if (err) throw err;
+    for (let row of res.rows) {
+      console.log(JSON.stringify(row));
+    }
+    client.end();
+  }
+);
+
+app.get("/", function(req, res) {
+  res.sendFile(__dirname + "/index.html");
+});
+
+// when data received from client-side via axios
+app.post("/post", function(req, res) {
+  // body-parser saves incoming data in req.body
+  const data = req.body.inputs;
+
+  client.connect();
+
+  let enquirydate = new Date().toISOString().slice(0, 10);
+  let name = data.name;
+  let email = data.email;
+  let telephone = data.telephone;
+  let dates = data.dates;
+  let package = data.package;
+  let message = data.message;
+  let read = "false";
+
+  // insert form input into table
+  client.query(
+    "INSERT INTO bookings (enquirydate, name, email, telephone, dates, package, message, read) VALUES (enquirydate, name, email, telephone, dates, package, message, read)"
+  );
+
+  // close the database connection
+  client.end();
+});
+
+// show booking enquiries to admin
+app.get("/enquiries", function(req, res, callback) {
+  // open database connection
+  client.connect();
+
+  client.query(
+    "SELECT rowid,enquirydate, name, email, telephone, dates, package, message, read FROM bookings",
+    function(err, rows) {
+      if (err) {
+        return console.log(err.message);
+      } else {
+        return callback(rows);
+        client.end();
+      }
+    }
+  );
+  function callback(data) {
+    res.send(data);
+  }
+});
+
+app.post("/update-enquiries", function(req, res) {
+  const data = req.body.data;
+
+  // iterate over updated enquiry data and input into bookings table
+  function updateEnquiries() {
+    data.forEach(function(el, index) {
+      let rowid = index + 1;
+      let enquirydate = el.enquirydate;
+      let name = el.name;
+      let email = el.email;
+      let telephone = el.telephone;
+      let dates = el.dates;
+      let package = el.package;
+      let message = el.message;
+      let read = el.read;
+
+      // insert updated enquiry data into bookings table
+      db.run(
+        "INSERT INTO bookings (rowid,enquirydate, name, email, telephone, dates, package, message, read) VALUES (?,?,?,?,?,?,?,?,?)",
+        rowid,
+        enquirydate,
+        name,
+        email,
+        telephone,
+        dates,
+        package,
+        message,
+        read
+      );
+    });
+  }
+
+  // open database
+  let db = new sqlite3.Database("data.db", err => {
+    if (err) {
+      return console.error(err.message);
+    }
+  });
+
+  // delete all rows from bookings table
+  db.run("DELETE FROM bookings", function(err) {
+    if (err) {
+      return console.error(err.message);
+    } else {
+      updateEnquiries();
+    }
+  });
+
+  // close the database connection
+  db.close(err => {
+    if (err) {
+      return console.error(err.message);
+    }
+  });
+});
+
+/*
 app.get("/", function(req, res) {
   res.sendFile(__dirname + "/index.html");
 });
@@ -144,5 +271,5 @@ app.post("/update-enquiries", function(req, res) {
     }
   });
 });
-
+*/
 module.exports = app;
