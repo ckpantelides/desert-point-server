@@ -83,7 +83,7 @@ app.post("/post", function(req, res) {
     let read = "false";
 
     const text =
-      "INSERT INTO bookings(enquirydate, name, email, telephone, dates, package, message, read) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *";
+      "INSERT INTO bookings(enquirydate, name, email, telephone, dates, package, message, read) VALUES($1, $2, $3, $4, $5, $6, $7, $8);";
     const values = [
       enquirydate,
       name,
