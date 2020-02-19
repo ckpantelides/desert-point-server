@@ -73,6 +73,7 @@ app.post('/post', function(req, res) {
     });
 
   function insertNewEnquiry() {
+    /*
     let enquirydate = new Date().toISOString().slice(0, 10);
     let name = data.name;
     let email = data.email;
@@ -104,10 +105,10 @@ app.post('/post', function(req, res) {
       }
     });
     */
-    client.query(
-      'INSERT INTO bookings(enquirydate,name) VALUES ($1,$2)',
-      ('2020-20-05', 'Chris')
-    );
+    client.query('INSERT INTO bookings(enquirydate,name) VALUES ($1,$2)', [
+      '2020-20-05',
+      'Chris'
+    ]);
 
     // close the database connection
     client.end();
