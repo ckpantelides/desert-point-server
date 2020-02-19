@@ -67,10 +67,10 @@ app.post('/post', function(req, res) {
   });
 
   pool.query(
-    'INSERT INTO requests(enquirydate,name)VALUES($1,$2)',
-    ['2020-20-18', 'Special K'],
-    (err, res) => {
-      console.log(err, res);
+    'INSERT INTO requests(name,email,message)VALUES($1,$2,$3)',
+    [data.name, data.email, data.message],
+    err => {
+      console.log(err);
       pool.end();
     }
   );
