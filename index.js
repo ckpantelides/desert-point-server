@@ -106,14 +106,14 @@ app.post('/post', function(req, res) {
     });
     */
     client
-      .query('INSERT INTO bookings(enquirydate,name) VALUES ($1,$2);', [
-        '2020-20-05',
-        'Chris'
-      ])
+      .query(
+        "INSERT INTO bookings(enquirydate,name) VALUES ('2020-20-05','Henry special');"
+      )
+      .then(client.end())
       .catch(e => console.error(e.stack));
 
     // close the database connection
-    client.end();
+    //client.end();
   }
 });
 
