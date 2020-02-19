@@ -94,6 +94,7 @@ app.post('/post', function(req, res) {
       message,
       read
     ];
+    /*
     // insert into bookings table
     client.query(text, values, (err, res) => {
       if (err) {
@@ -102,6 +103,11 @@ app.post('/post', function(req, res) {
         console.log(res.rows[0]);
       }
     });
+    */
+    client.query(
+      'INSERT INTO bookings(enquirydate,name) VALUES ($1,$2)',
+      ('2020-20-05', 'Chris')
+    );
 
     // close the database connection
     client.end();
