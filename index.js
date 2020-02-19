@@ -66,10 +66,21 @@ app.post('/post', function(req, res) {
     connectionString: connString
   });
 
+  pool.query(
+    'INSERT INTO requests(enquirydate,name)VALUES($1,$2)',
+    ['2020-20-18', 'Special K'],
+    (err, res) => {
+      console.log(err, res);
+      pool.end();
+    }
+  );
+  // The below is confirmed as working
+  /*
   pool.query("INSERT INTO requests(name)VALUES('Mary Ann')", (err, res) => {
     console.log(err, res);
     pool.end();
   });
+  */
   /*
   pool
     .query('INSERT INTO requests (enquirydate, name) VALUES($1, $2)', [
