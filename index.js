@@ -46,12 +46,13 @@ if (process.env.DATABASE_URL) {
 }
 
 let connString = process.env.DATABASE_URL;
+/*
 const { Pool } = require('pg');
 
 const pool = new Pool({
   connectionString: connString
 });
-
+*/
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
 });
@@ -76,9 +77,11 @@ app.post('/post', function(req, res) {
     .catch(err =>
       setImmediate(() => {
         throw err;
-      });
-  
+      })
+    );
+
   pool.end();
+
   // Below inserts data but throws error message
   /*
   pool.query(
