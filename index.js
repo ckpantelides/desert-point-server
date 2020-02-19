@@ -40,13 +40,6 @@ const port = process.env.PORT || 8000;
 app.listen(port);
 console.log('Server running on port ' + port);
 
-const { Client } = require('pg');
-
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: true
-});
-
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
 });
@@ -55,6 +48,12 @@ app.get('/', function(req, res) {
 app.post('/post', function(req, res) {
   // body-parser saves incoming data in req.body
   const data = req.body.inputs;
+  const { Client } = require('pg');
+
+  const client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: true
+  });
 
   client.connect().then(console.log('Connected to pgsl'));
 
