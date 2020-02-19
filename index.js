@@ -40,12 +40,12 @@ const port = process.env.PORT || 8000;
 app.listen(port);
 console.log('Server running on port ' + port);
 
-/*
+const { Client } = require('pg');
+
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
   ssl: true
 });
-*/
 
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
@@ -55,19 +55,17 @@ app.get('/', function(req, res) {
 app.post('/post', function(req, res) {
   // body-parser saves incoming data in req.body
   const data = req.body.inputs;
-  const { Pool } = require('pg');
-  const pool = new Pool();
 
-  pool
-    .query('INSERT INTO bookings(enquirydate,name) VALUES ($1,$2)', [
-      '2020-06-06',
-      'Henry special'
-    ])
-    .catch(err =>
-      setImmediate(() => {
-        throw err;
-      })
-    );
+  client.connect();
+
+  client
+    .query(
+      "INSERT INTO bookings(enquirydate,name) VALUES ('2020-20-05','Henry special 2');"
+    )
+    .catch(e => console.error(e.stack));
+
+  client.end();
+
   /*
   const { Client } = require('pg');
 
