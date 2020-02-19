@@ -56,12 +56,14 @@ app.post('/post', function(req, res) {
   // body-parser saves incoming data in req.body
   const data = req.body.inputs;
 
-  client.connect();
+  client.connect().then(console.log('Connected to pgsl'));
 
   client
-    .query(
-      "INSERT INTO bookings(enquirydate,name) VALUES ('2020-20-05','Henry special 2');"
-    )
+    .query('INSERT INTO bookings (enquirydate, name) VALUES($1, $2)', [
+      '2020-20-05',
+      'Henry special 2'
+    ])
+    .then(console.log('Enquiry added to database'))
     .catch(e => console.error(e.stack));
 
   client.end();
