@@ -1,13 +1,13 @@
 // run server: node index.js || nodemon index.js for hot-reloads
-const app = require("express")();
-const server = require("http").Server(app);
-const sqlite3 = require("sqlite3").verbose();
+const app = require('express')();
+const server = require('http').Server(app);
+const sqlite3 = require('sqlite3').verbose();
 
 // parsing middleware allows us to read incoming axios data
-const bodyParser = require("body-parser");
+const bodyParser = require('body-parser');
 
 // CORS middleware allows data to be sent from client-side
-const cors = require("cors");
+const cors = require('cors');
 
 /*
 app.use(function(req, res, next) {
@@ -24,10 +24,10 @@ app.use(function(req, res, next) {
 //app.options("*", cors());
 
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
   res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
   );
   next();
 });
@@ -38,7 +38,7 @@ app.use(bodyParser.json());
 const port = process.env.PORT || 8000;
 //server.listen(port);
 app.listen(port);
-console.log("Server running on port " + port);
+console.log('Server running on port ' + port);
 
 /*
 const client = new Client({
@@ -47,15 +47,15 @@ const client = new Client({
 });
 */
 
-app.get("/", function(req, res) {
-  res.sendFile(__dirname + "/index.html");
+app.get('/', function(req, res) {
+  res.sendFile(__dirname + '/index.html');
 });
 
 // when data received from client-side via axios
-app.post("/post", function(req, res) {
+app.post('/post', function(req, res) {
   // body-parser saves incoming data in req.body
   const data = req.body.inputs;
-  const { Client } = require("pg");
+  const { Client } = require('pg');
 
   const client = new Client({
     connectionString: process.env.DATABASE_URL,
@@ -65,7 +65,7 @@ app.post("/post", function(req, res) {
   client
     .connect()
     .then(() => {
-      console.log("connected");
+      console.log('connected');
       insertNewEnquiry();
     })
     .catch(e => {
@@ -80,10 +80,10 @@ app.post("/post", function(req, res) {
     let dates = data.dates;
     let package = data.package;
     let message = data.message;
-    let read = "false";
+    let read = 'false';
 
     const text =
-      "INSERT INTO bookings(enquirydate, name, email, telephone, dates, package, message, read) VALUES($1, $2, $3, $4, $5, $6, $7, $8);";
+      'INSERT INTO bookings(enquirydate, name, email, telephone, dates, package, message, read) VALUES($1, $2, $3, $4, $5, $6, $7, $8)';
     const values = [
       enquirydate,
       name,
@@ -109,9 +109,9 @@ app.post("/post", function(req, res) {
 });
 
 // show booking enquiries to admin
-app.get("/enquiries", function(req, res, callback) {
+app.get('/enquiries', function(req, res, callback) {
   // open database connection
-  const { Client } = require("pg");
+  const { Client } = require('pg');
 
   const client = new Client({
     connectionString: process.env.DATABASE_URL,
@@ -121,7 +121,7 @@ app.get("/enquiries", function(req, res, callback) {
   client
     .connect()
     .then(() => {
-      console.log("connected");
+      console.log('connected');
       retrieveEnquiries();
     })
     .catch(e => {
@@ -130,7 +130,7 @@ app.get("/enquiries", function(req, res, callback) {
 
   function retrieveEnquiries() {
     client.query(
-      "SELECT rowid,enquirydate, name, email, telephone, dates, package, message, read FROM bookings",
+      'SELECT rowid,enquirydate, name, email, telephone, dates, package, message, read FROM bookings',
       (err, res) => {
         if (err) {
           return console.log(err.message);
@@ -147,7 +147,7 @@ app.get("/enquiries", function(req, res, callback) {
   }
 });
 
-app.post("/update-enquiries", function(req, res) {
+app.post('/update-enquiries', function(req, res) {
   const data = req.body.data;
 
   // iterate over updated enquiry data and input into bookings table
@@ -165,7 +165,7 @@ app.post("/update-enquiries", function(req, res) {
 
       // insert updated enquiry data into bookings table
       db.run(
-        "INSERT INTO bookings (rowid,enquirydate, name, email, telephone, dates, package, message, read) VALUES (?,?,?,?,?,?,?,?,?)",
+        'INSERT INTO bookings (rowid,enquirydate, name, email, telephone, dates, package, message, read) VALUES (?,?,?,?,?,?,?,?,?)',
         rowid,
         enquirydate,
         name,
@@ -180,14 +180,14 @@ app.post("/update-enquiries", function(req, res) {
   }
 
   // open database
-  let db = new sqlite3.Database("data.db", err => {
+  let db = new sqlite3.Database('data.db', err => {
     if (err) {
       return console.error(err.message);
     }
   });
 
   // delete all rows from bookings table
-  db.run("DELETE FROM bookings", function(err) {
+  db.run('DELETE FROM bookings', function(err) {
     if (err) {
       return console.error(err.message);
     } else {
