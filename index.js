@@ -66,6 +66,21 @@ app.post('/post', function(req, res) {
     connectionString: connString
   });
 
+  pool
+    .query('INSERT INTO requests(name,email,message)VALUES($1,$2,$3)', [
+      data.name,
+      data.email,
+      data.message
+    ])
+    .then(console.log('Enquiry inserted into database'))
+    .catch(err =>
+      setImmediate(() => {
+        throw err;
+      });
+  
+  pool.end();
+  // Below inserts data but throws error message
+  /*
   pool.query(
     'INSERT INTO requests(name,email,message)VALUES($1,$2,$3)',
     [data.name, data.email, data.message],
@@ -74,6 +89,7 @@ app.post('/post', function(req, res) {
       pool.end();
     }
   );
+  */
   // The below is confirmed as working
   /*
   pool.query("INSERT INTO requests(name)VALUES('Mary Ann')", (err, res) => {
