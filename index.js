@@ -128,7 +128,7 @@ app.get("/enquiries", function(req, res, callback) {
       console.log(e);
     });
 
-  function retriveEnquiries() {
+  function retrieveEnquiries() {
     client.query(
       "SELECT rowid,enquirydate, name, email, telephone, dates, package, message, read FROM bookings",
       (err, res) => {
