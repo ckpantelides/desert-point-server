@@ -94,7 +94,7 @@ app.post("/post", function(req, res) {
       message,
       read
     ];
-    // inset into bookings table
+    // insert into bookings table
     client.query(text, values, (err, res) => {
       if (err) {
         console.log(err.stack);
@@ -111,21 +111,39 @@ app.post("/post", function(req, res) {
 // show booking enquiries to admin
 app.get("/enquiries", function(req, res, callback) {
   // open database connection
-  client.connect();
+  const { Client } = require("pg");
 
-  client.query(
-    "SELECT rowid,enquirydate, name, email, telephone, dates, package, message, read FROM bookings",
-    function(err, rows) {
-      if (err) {
-        return console.log(err.message);
-      } else {
-        return callback(rows);
-        client.end();
+  const client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: true
+  });
+
+  client
+    .connect()
+    .then(() => {
+      console.log("connected");
+      retrieveEnquiries();
+    })
+    .catch(e => {
+      console.log(e);
+    });
+
+  function retriveEnquiries() {
+    client.query(
+      "SELECT rowid,enquirydate, name, email, telephone, dates, package, message, read FROM bookings",
+      (err, res) => {
+        if (err) {
+          return console.log(err.message);
+        } else {
+          console.log(res.rows);
+          return callback(res.rows);
+          client.end();
+        }
       }
+    );
+    function callback(data) {
+      res.send(data);
     }
-  );
-  function callback(data) {
-    res.send(data);
   }
 });
 
