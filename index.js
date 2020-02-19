@@ -110,7 +110,7 @@ app.post('/post', function(req, res) {
         '2020-20-05',
         'Chris'
       ])
-      .catch(console.log(err.stack));
+      .catch(e => console.error(e.stack));
 
     // close the database connection
     client.end();
