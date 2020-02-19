@@ -60,7 +60,17 @@ app.get('/', function(req, res) {
 app.post('/post', function(req, res) {
   // body-parser saves incoming data in req.body
   const data = req.body.inputs;
+  const { Pool } = require('pg');
 
+  const pool = new Pool({
+    connectionString: connString
+  });
+
+  pool.query("INSERT INTO requests(name)VALUES('Mary Ann')", (err, res) => {
+    console.log(err, res);
+    pool.end();
+  });
+  /*
   pool
     .query('INSERT INTO requests (enquirydate, name) VALUES($1, $2)', [
       '2020-20-05',
@@ -71,7 +81,7 @@ app.post('/post', function(req, res) {
         throw err;
       })
     );
-
+*/
   /*
   const { Client } = require('pg');
 
