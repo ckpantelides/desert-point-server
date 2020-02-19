@@ -40,6 +40,18 @@ const port = process.env.PORT || 8000;
 app.listen(port);
 console.log('Server running on port ' + port);
 
+let pg = require('pg');
+if (process.env.DATABASE_URL) {
+  pg.defaults.ssl = true;
+}
+
+let connString = process.env.DATABASE_URL;
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  connectionString: connString
+});
+
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
 });
@@ -48,6 +60,19 @@ app.get('/', function(req, res) {
 app.post('/post', function(req, res) {
   // body-parser saves incoming data in req.body
   const data = req.body.inputs;
+
+  pool
+    .query('INSERT INTO requests (enquirydate, name) VALUES($1, $2)', [
+      '2020-20-05',
+      'Henry special 2'
+    ])
+    .catch(err =>
+      setImmediate(() => {
+        throw err;
+      })
+    );
+
+  /*
   const { Client } = require('pg');
 
   const client = new Client({
@@ -58,7 +83,7 @@ app.post('/post', function(req, res) {
   client.connect().then(console.log('Connected to pgsl'));
 
   client
-    .query('INSERT INTO bookings (enquirydate, name) VALUES($1, $2)', [
+    .query('INSERT INTO requests (enquirydate, name) VALUES($1, $2)', [
       '2020-20-05',
       'Henry special 2'
     ])
@@ -66,7 +91,7 @@ app.post('/post', function(req, res) {
     .catch(e => console.error(e.stack));
 
   client.end();
-
+  */
   /*
   const { Client } = require('pg');
 
