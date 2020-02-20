@@ -46,13 +46,13 @@ if (process.env.DATABASE_URL) {
 }
 
 let connString = process.env.DATABASE_URL;
-/*
+
 const { Pool } = require('pg');
 
 const pool = new Pool({
   connectionString: connString
 });
-*/
+
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
 });
@@ -61,12 +61,13 @@ app.get('/', function(req, res) {
 app.post('/post', function(req, res) {
   // body-parser saves incoming data in req.body
   const data = req.body.inputs;
+  /*
   const { Pool } = require('pg');
 
   const pool = new Pool({
     connectionString: connString
   });
-
+*/
   pool
     .query('INSERT INTO requests(name,email,message)VALUES($1,$2,$3)', [
       data.name,
@@ -80,7 +81,7 @@ app.post('/post', function(req, res) {
       })
     );
 
-  pool.end();
+  // pool.end();
 
   // Below inserts data but throws error message
   /*
