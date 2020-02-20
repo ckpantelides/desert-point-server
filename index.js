@@ -68,12 +68,22 @@ app.post('/post', function(req, res) {
     connectionString: connString
   });
 */
+  let enquirydate = new Date().toISOString().slice(0, 10);
+
   pool
-    .query('INSERT INTO requests(name,email,message)VALUES($1,$2,$3)', [
-      data.name,
-      data.email,
-      data.message
-    ])
+    .query(
+      'INSERT INTO requests(enquirydate, name, email, telephone, dates, package, message, read)VALUES($1, $2, $3, $4, $5, $6, $7, $8)',
+      [
+        enquirydate,
+        data.name,
+        data.email,
+        data.telephone,
+        data.dates,
+        data.package,
+        data.message,
+        'false'
+      ]
+    )
     .then(console.log('Enquiry inserted into database'))
     .catch(err =>
       setImmediate(() => {
