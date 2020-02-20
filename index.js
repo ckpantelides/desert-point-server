@@ -151,7 +151,9 @@ app.post('/update-enquiries', function(req, res) {
     });
   }
 
+  // this will be used in the query below to set the primary key to data.length + 1
   let resetPrimaryKey = `SELECT setval('requests_rowid_seq', ${data.length}, true);`;
+
   // deletes all rows from the requests table and then calls updateEnquiries()
   // this is necessary to reset the rowids, to account for reodered enquiries
   pool.query('TRUNCATE TABLE requests', function(err) {
