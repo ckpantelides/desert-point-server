@@ -3,29 +3,16 @@
 // app runs on the Express middleware
 const app = require('express')();
 
-//const server = require('http').Server(app);
-//const sqlite3 = require('sqlite3').verbose();
-
 // parsing middleware allows us to read incoming axios data
 const bodyParser = require('body-parser');
 
 // CORS middleware allows data to be sent from client-side
 const cors = require('cors');
 
-/*
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000/");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  res.header("Access-Control-Allow-Methods", "POST, OPTIONS");
-  next();
-});
-*/
-//app.use(cors());
+app.use(cors());
 //app.options("*", cors());
 
+/*
 app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
   res.header(
@@ -34,12 +21,12 @@ app.use(function(req, res, next) {
   );
   next();
 });
+*/
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 const port = process.env.PORT || 8000;
-//server.listen(port);
 app.listen(port);
 console.log('Server running on port ' + port);
 
