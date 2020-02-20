@@ -111,104 +111,28 @@ app.post('/post', function(req, res) {
     pool.end();
   });
   */
-  /*
-  pool
-    .query('INSERT INTO requests (enquirydate, name) VALUES($1, $2)', [
-      '2020-20-05',
-      'Henry special 2'
-    ])
-    .catch(err =>
-      setImmediate(() => {
-        throw err;
-      })
-    );
-*/
-  /*
-  const { Client } = require('pg');
-
-  const client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: true
-  });
-
-  client.connect().then(console.log('Connected to pgsl'));
-
-  client
-    .query('INSERT INTO requests (enquirydate, name) VALUES($1, $2)', [
-      '2020-20-05',
-      'Henry special 2'
-    ])
-    .then(console.log('Enquiry added to database'))
-    .catch(e => console.error(e.stack));
-
-  client.end();
-  */
-  /*
-  const { Client } = require('pg');
-
-  const client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: true
-  });
-
-  client
-    .connect()
-    .then(() => {
-      console.log('connected');
-      insertNewEnquiry();
-    })
-    .catch(e => {
-      console.log(e);
-    });
-
-  function insertNewEnquiry() {
-    /*
-    let enquirydate = new Date().toISOString().slice(0, 10);
-    let name = data.name;
-    let email = data.email;
-    let telephone = data.telephone;
-    let dates = data.dates;
-    let package = data.package;
-    let message = data.message;
-    let read = 'false';
-
-    const text =
-      'INSERT INTO bookings(enquirydate, name, email, telephone, dates, package, message, read) VALUES($1, $2, $3, $4, $5, $6, $7, $8)';
-    const values = [
-      enquirydate,
-      name,
-      email,
-      telephone,
-      dates,
-      package,
-      message,
-      read
-    ];
-    /*
-    // insert into bookings table
-    client.query(text, values, (err, res) => {
-      if (err) {
-        console.log(err.stack);
-      } else {
-        console.log(res.rows[0]);
-      }
-    });
-    
-    client
-      .query(
-        "INSERT INTO bookings(enquirydate,name) VALUES ('2020-20-05','Henry special');"
-      )
-      .then(client.end())
-      .catch(e => console.error(e.stack));
-
-    // close the database connection
-    //client.end();
-  } */
 });
 
 // show booking enquiries to admin
 app.get('/enquiries', function(req, res, callback) {
-  // open database connection
+  pool.query(
+    'SELECT rowid,enquirydate, name, email, telephone, dates, package, message, read FROM requests',
+    (err, res) => {
+      if (err) {
+        return console.log(err.message);
+      } else {
+        //console.log(res.rows);
+        return callback(res.rows);
+        client.end();
+      }
+    }
+  );
+  function callback(data) {
+    res.send(data);
+  }
+
+  // Below confirmed as working. N/B reading from booking not requests
+  /*
   const { Client } = require('pg');
 
   const client = new Client({
@@ -243,6 +167,7 @@ app.get('/enquiries', function(req, res, callback) {
       res.send(data);
     }
   }
+  */
 });
 
 app.post('/update-enquiries', function(req, res) {
