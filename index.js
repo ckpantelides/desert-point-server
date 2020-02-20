@@ -110,7 +110,7 @@ app.post('/post', function(req, res) {
 // show booking enquiries to admin
 app.get('/enquiries', function(req, res, callback) {
   pool.query(
-    'SELECT enquirydate, name, email, telephone, dates, package, message, read FROM requests',
+    'SELECT rowid, enquirydate, name, email, telephone, dates, package, message, read FROM requests',
     (err, res) => {
       if (err) {
         return console.log(err.message);
