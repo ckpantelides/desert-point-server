@@ -1,7 +1,7 @@
 // run server: node index.js || nodemon index.js for hot-reloads
 const app = require('express')();
-const server = require('http').Server(app);
-const sqlite3 = require('sqlite3').verbose();
+//const server = require('http').Server(app);
+//const sqlite3 = require('sqlite3').verbose();
 
 // parsing middleware allows us to read incoming axios data
 const bodyParser = require('body-parser');
@@ -46,9 +46,8 @@ if (process.env.DATABASE_URL) {
   pg.defaults.ssl = true;
 }
 
-// pool is used instead of client (client kept returning errors)
-// c.f. pg documentation that recommends pools. No need to call pool.end() -
-// can leave pool open instead
+// pool is used instead of client to connect to postgresql (client kept returning errors)
+// c.f. npm 'pg' documentation recommends pools. No need to call pool.end() - the pool can be left open
 let connString = process.env.DATABASE_URL;
 const { Pool } = require('pg');
 const pool = new Pool({
@@ -91,6 +90,8 @@ app.post('/post', function(req, res) {
         throw err;
       })
     );
+
+  res.end();
 });
 
 // this route is called to show the booking enquiries to the admin on the frontend
@@ -156,6 +157,7 @@ app.post('/update-enquiries', function(req, res) {
       updateEnquiries();
     }
   });
+  res.end();
 });
 
 module.exports = app;
