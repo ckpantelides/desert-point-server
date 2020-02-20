@@ -1,5 +1,8 @@
 // run server: node index.js || nodemon index.js for hot-reloads
+
+// app runs on the Express middleware
 const app = require('express')();
+
 //const server = require('http').Server(app);
 //const sqlite3 = require('sqlite3').verbose();
 
@@ -97,7 +100,7 @@ app.post('/post', function(req, res) {
 // this route is called to show the booking enquiries to the admin on the frontend
 app.get('/enquiries', function(req, res, callback) {
   pool.query(
-    'SELECT rowid, enquirydate, name, email, telephone, dates, package, message, read FROM requests',
+    'SELECT rowid, enquirydate, name, email, telephone, dates, package, message, read FROM requests ORDER BY rowid',
     (err, res) => {
       if (err) {
         return console.log(err.message);
@@ -150,7 +153,7 @@ app.post('/update-enquiries', function(req, res) {
 
   // deletes all rows from the requests table and then calls updateEnquiries()
   // this is necessary to reset the rowids, to account for reodered enquiries
-  pool.query('DELETE FROM requests', function(err) {
+  pool.query('DELETE FROM requests RESTART IDENTITY', function(err) {
     if (err) {
       return console.error(err.message);
     } else {
