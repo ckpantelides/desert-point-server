@@ -124,13 +124,14 @@ app.post('/update-enquiries', function(req, res) {
   function updateEnquiries() {
     data.forEach(function(el, index) {
       // rowid is reset to account for enquiries being re-ordered by the user
-      // let rowid = index + 1;
+      let rowid = index + 1;
 
       // insert updated enquiry data into requests table
       pool
         .query(
-          'INSERT INTO requests (enquirydate, name, email, telephone, dates, package, message, read) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+          'INSERT INTO requests (rowid, enquirydate, name, email, telephone, dates, package, message, read) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
           [
+            rowid,
             el.enquirydate,
             el.name,
             el.email,
