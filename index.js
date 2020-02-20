@@ -61,13 +61,7 @@ app.get('/', function(req, res) {
 app.post('/post', function(req, res) {
   // body-parser saves incoming data in req.body
   const data = req.body.inputs;
-  /*
-  const { Pool } = require('pg');
 
-  const pool = new Pool({
-    connectionString: connString
-  });
-*/
   let enquirydate = new Date().toISOString().slice(0, 10);
 
   pool
@@ -116,14 +110,13 @@ app.post('/post', function(req, res) {
 // show booking enquiries to admin
 app.get('/enquiries', function(req, res, callback) {
   pool.query(
-    'SELECT rowid,enquirydate, name, email, telephone, dates, package, message, read FROM requests',
+    'SELECT enquirydate, name, email, telephone, dates, package, message, read FROM requests',
     (err, res) => {
       if (err) {
         return console.log(err.message);
       } else {
         //console.log(res.rows);
         return callback(res.rows);
-        client.end();
       }
     }
   );
@@ -177,51 +170,38 @@ app.post('/update-enquiries', function(req, res) {
   function updateEnquiries() {
     data.forEach(function(el, index) {
       let rowid = index + 1;
-      let enquirydate = el.enquirydate;
-      let name = el.name;
-      let email = el.email;
-      let telephone = el.telephone;
-      let dates = el.dates;
-      let package = el.package;
-      let message = el.message;
-      let read = el.read;
 
       // insert updated enquiry data into bookings table
-      db.run(
-        'INSERT INTO bookings (rowid,enquirydate, name, email, telephone, dates, package, message, read) VALUES (?,?,?,?,?,?,?,?,?)',
-        rowid,
-        enquirydate,
-        name,
-        email,
-        telephone,
-        dates,
-        package,
-        message,
-        read
-      );
+      pool
+        .query(
+          'INSERT INTO requests (rowid, enquirydate, name, email, telephone, dates, package, message, read) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+          [
+            rowid,
+            el.enquirydate,
+            el.name,
+            el.email,
+            el.telephone,
+            el.dates,
+            el.package,
+            el.message,
+            el.read
+          ]
+        )
+        .then(console.log('Updates inserted into detabase'))
+        .catch(err =>
+          setImmediate(() => {
+            throw err;
+          })
+        );
     });
   }
 
-  // open database
-  let db = new sqlite3.Database('data.db', err => {
-    if (err) {
-      return console.error(err.message);
-    }
-  });
-
-  // delete all rows from bookings table
-  db.run('DELETE FROM bookings', function(err) {
+  // delete all rows from requests table
+  pool.query('DELETE FROM requests', function(err) {
     if (err) {
       return console.error(err.message);
     } else {
       updateEnquiries();
-    }
-  });
-
-  // close the database connection
-  db.close(err => {
-    if (err) {
-      return console.error(err.message);
     }
   });
 });
