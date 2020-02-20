@@ -124,14 +124,13 @@ app.post('/update-enquiries', function(req, res) {
   function updateEnquiries() {
     data.forEach(function(el, index) {
       // rowid is reset to account for enquiries being re-ordered by the user
-      let rowid = index + 1;
+      // let rowid = index + 1;
 
       // insert updated enquiry data into requests table
       pool
         .query(
-          'INSERT INTO requests (rowid, enquirydate, name, email, telephone, dates, package, message, read) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+          'INSERT INTO requests (enquirydate, name, email, telephone, dates, package, message, read) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
           [
-            rowid,
             el.enquirydate,
             el.name,
             el.email,
@@ -153,7 +152,7 @@ app.post('/update-enquiries', function(req, res) {
 
   // deletes all rows from the requests table and then calls updateEnquiries()
   // this is necessary to reset the rowids, to account for reodered enquiries
-  pool.query('DELETE FROM requests RESTART IDENTITY', function(err) {
+  pool.query('TRUNCATE TABLE requests RESTART IDENTITY', function(err) {
     if (err) {
       return console.error(err.message);
     } else {
