@@ -116,7 +116,6 @@ app.post('/update-enquiries', function(req, res) {
             el.read
           ]
         )
-        .then(console.log('Updates inserted into database'))
         .catch(err =>
           setImmediate(() => {
             throw err;
