@@ -3,7 +3,7 @@ Surf Camp website backend built with node
 
 This backend code handles booking enquiries from this Surf Camp [website](https://ckpantelides.github.io/desert-point) - the repo for the frontend is [here](https://github.com/ckpantelides/desert-point-server). It's hosted on Heroku.
 
-This backend stores the booking enquiries made through the "contact" section of the frontend in a postgresql database, and then serves them to the [Admin page](https://github.com/ckpantelides/deser-point/#/admin) when needed. It also handles updates to the booking enquiries made by the Admin page.
+This backend stores the booking enquiries made through the "contact" section of the frontend in a postgresql database, and then serves them to the [Admin page](https://ckpantelides.github.io/desert-point/#/admin) when needed. It also handles updates to the booking enquiries made by the Admin page.
 
 #### Code structure
 
